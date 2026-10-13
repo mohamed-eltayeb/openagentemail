@@ -157,6 +157,8 @@ export function createApp(options: AppOptions = {}): Hono {
       persistPath: join(config.dataDir, 'ui-sessions.json'),
     });
     registerUiAssets(app);
+    // Bare origin (e.g. https://mail.example.com/) would otherwise 404; send humans to the dashboard.
+    app.get('/', (c) => c.redirect('/ui', 302));
     app.use('/ui/api/session', uiSessionBodyLimit);
     app.use('/ui/api/session', requireUiOrigin);
     app.route('/ui/api/session', createUiSessionRoutes(uiSessions));
